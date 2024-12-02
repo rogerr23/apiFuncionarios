@@ -1,0 +1,31 @@
+networks:
+  apifuncionarios-network: # Nome da rede
+    driver: bridge # Rede compartilhada
+
+services: # Mapeamento dos serviços
+  apifuncionarios: # Contêiner para executar a API
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: # Porta de execução
+      - "8088:8088"
+    networks:
+      - apifuncionarios-network
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  mongodb: # Contêiner para executar o banco de dados
+    image: mongo:latest # Última versão do MongoDB
+    ports: # Configuração das portas
+      - "27017:27017"
+    networks:
+      - apifuncionarios-network
+
+  rabbitmq: # Contêiner para executar mensageria
+    image: rabbitmq:3-management
+    ports: # Configuração das portas
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - apifuncionarios-network 
